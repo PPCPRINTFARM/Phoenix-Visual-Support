@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Phoenix Visual Support</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --phoenix-orange: #ff6b2b;
+    --phoenix-amber: #ffaa00;
+    --phoenix-red: #ff3b5c;
+    --phoenix-green: #00d68f;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Welcome Screen */
+  .welcome-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    z-index: 100;
+    background: var(--bg);
+    text-align: center;
+  }
+
+  .welcome-screen.hidden { display: none; }
+
+  .welcome-logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--phoenix-orange), var(--phoenix-amber));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(255, 107, 43, 0.3);
+  }
+
+  .welcome-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .welcome-title span { color: var(--phoenix-orange); }
+
+  .welcome-sub {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 32px;
+    max-width: 300px;
+  }
+
+  .welcome-steps {
+    text-align: left;
+    margin-bottom: 32px;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--phoenix-orange);
+    color: var(--phoenix-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .start-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--phoenix-orange), #e85d20);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(255, 107, 43, 0.3);
+    transition: transform 0.15s;
+  }
+
+  .start-btn:active { transform: scale(0.97); }
+
+  .privacy-note {
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--text-dim);
+    opacity: 0.6;
+  }
+
+  /* Main Video Screen */
+  .video-screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    background: black;
+  }
+
+  .video-screen.active { display: flex; }
+
+  .video-top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding: 12px 16px;
+    padding-top: max(12px, env(safe-area-inset-top));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .top-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .top-brand-icon {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--phoenix-orange), var(--phoenix-amber));
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .connection-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(0,214,143,0.2);
+    border: 1px solid rgba(0,214,143,0.4);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--phoenix-green);
+  }
+
+  .connection-pill.disconnected {
+    background: rgba(255,59,92,0.2);
+    border-color: rgba(255,59,92,0.4);
+    color: var(--phoenix-red);
+  }
+
+  .conn-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--phoenix-green);
+  }
+
+  .connection-pill.disconnected .conn-dot { background: var(--phoenix-red); }
+
+  /* Video */
+  .local-video-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #localVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .annotation-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Pointer from technician */
+  .remote-pointer {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--phoenix-red);
+    box-shadow: 0 0 24px var(--phoenix-red), 0 0 48px rgba(255,59,92,0.4);
+    z-index: 15;
+    transform: translate(-50%, -50%);
+    display: none;
+    pointer-events: none;
+    transition: left 0.08s ease-out, top 0.08s ease-out;
+  }
+
+  .remote-pointer::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0.85;
+  }
+
+  .remote-pointer.visible { display: block; }
+
+  /* Ripple animation on pointer */
+  .remote-pointer::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid var(--phoenix-red);
+    animation: ripple 1.5s infinite;
+  }
+
+  @keyframes ripple {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+
+  /* Freeze overlay */
+  .freeze-banner {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    padding: 8px 20px;
+    background: var(--phoenix-red);
+    color: white;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: none;
+    animation: freeze-pulse 1s infinite;
+  }
+
+  .freeze-banner.active { display: block; }
+
+  @keyframes freeze-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Bottom controls */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding: 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  }
+
+  .chat-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .customer-chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 24px;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    backdrop-filter: blur(10px);
+  }
+
+  .customer-chat-input::placeholder { color: rgba(255,255,255,0.5); }
+
+  .customer-send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--phoenix-orange);
+    border: none;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .end-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--phoenix-red);
+    border: none;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Chat bubble from technician */
+  .tech-bubble {
+    position: absolute;
+    bottom: 80px;
+    left: 16px;
+    right: 16px;
+    z-index: 20;
+    display: none;
+  }
+
+  .tech-bubble.visible { display: block; }
+
+  .bubble-content {
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 12px 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    animation: bubble-in 0.3s ease;
+  }
+
+  .bubble-sender {
+    font-size: 11px;
+    color: var(--phoenix-orange);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  @keyframes bubble-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Permission error */
+  .error-screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: var(--bg);
+    text-align: center;
+    z-index: 200;
+  }
+
+  .error-screen.active { display: flex; }
+
+  .error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .error-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .error-text {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    max-width: 300px;
+    margin-bottom: 24px;
+  }
+
+  .retry-btn {
+    padding: 12px 32px;
+    background: var(--phoenix-orange);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- Welcome Screen -->
+<div class="welcome-screen" id="welcomeScreen">
+  <div class="welcome-logo">🔥</div>
+  <div class="welcome-title"><span>Phoenix</span> Visual Support</div>
+  <div class="welcome-sub">Your technician wants to see your equipment through your camera to help diagnose the issue.</div>
+
+  <div class="welcome-steps">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <span>Tap "Start Session" below</span>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <span>Allow camera access when prompted</span>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <span>Point your camera at the equipment</span>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startSession()">
+    <span>📹</span> Start Session
+  </button>
+
+  <div class="privacy-note">🔒 Your camera feed is shared only with the technician for this session.</div>
+</div>
+
+<!-- Video Screen -->
+<div class="video-screen" id="videoScreen">
+  <div class="video-top-bar">
+    <div class="top-brand">
+      <div class="top-brand-icon">🔥</div>
+      Phoenix Support
+    </div>
+    <div class="connection-pill" id="connPill">
+      <div class="conn-dot"></div>
+      <span id="connText">Connected</span>
+    </div>
+  </div>
+
+  <div class="local-video-container">
+    <video id="localVideo" autoplay playsinline muted></video>
+    <canvas class="annotation-canvas" id="annotationCanvas"></canvas>
+    <div class="remote-pointer" id="remotePointer"></div>
+    <div class="freeze-banner" id="freezeBanner">⏸️ Frame Frozen</div>
+  </div>
+
+  <div class="tech-bubble" id="techBubble">
+    <div class="bubble-content">
+      <div class="bubble-sender">Technician</div>
+      <div id="bubbleText"></div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="chat-bar">
+      <button class="end-btn" onclick="endSession()">✕</button>
+      <input class="customer-chat-input" id="customerChatInput" placeholder="Message technician..." onkeydown="if(event.key==='Enter')sendCustomerChat()">
+      <button class="customer-send-btn" onclick="sendCustomerChat()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- Error Screen -->
+<div class="error-screen" id="errorScreen">
+  <div class="error-icon">📷</div>
+  <div class="error-title">Camera Access Needed</div>
+  <div class="error-text">Please allow camera access in your browser settings so the technician can see your equipment.</div>
+  <button class="retry-btn" onclick="startSession()">Try Again</button>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  let socket;
+  let peerConnection;
+  let localStream;
+  let currentFacing = 'environment'; // rear camera by default
+  let sessionId;
+  let bubbleTimeout;
+
+  const annoCanvas = document.getElementById('annotationCanvas');
+  const annoCtx = annoCanvas.getContext('2d');
+
+  function resizeAnnoCanvas() {
+    const container = document.querySelector('.local-video-container');
+    if (container) {
+      annoCanvas.width = container.clientWidth;
+      annoCanvas.height = container.clientHeight;
+    }
+  }
+  window.addEventListener('resize', resizeAnnoCanvas);
+
+  // Extract session ID from URL
+  const pathParts = window.location.pathname.split('/');
+  sessionId = pathParts[pathParts.length - 1];
+
+  async function startSession() {
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: currentFacing, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+
+      document.getElementById('localVideo').srcObject = localStream;
+      document.getElementById('welcomeScreen').classList.add('hidden');
+      document.getElementById('videoScreen').classList.add('active');
+      document.getElementById('errorScreen').classList.remove('active');
+
+      resizeAnnoCanvas();
+      initSocket();
+
+    } catch (err) {
+      console.error('Camera error:', err);
+      document.getElementById('welcomeScreen').classList.add('hidden');
+      document.getElementById('errorScreen').classList.add('active');
+    }
+  }
+
+  function initSocket() {
+    socket = io();
+
+    socket.emit('join-session', { sessionId, role: 'customer' });
+
+    socket.on('peer-joined', ({ role }) => {
+      if (role === 'technician') {
+        updateConnection(true);
+      }
+    });
+
+    socket.on('peer-disconnected', ({ role }) => {
+      if (role === 'technician') {
+        updateConnection(false);
+      }
+    });
+
+    // Signaling
+    socket.on('offer', async ({ offer }) => {
+      await setupPeerConnection();
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+      socket.emit('answer', { sessionId, answer });
+    });
+
+    socket.on('answer', async ({ answer }) => {
+      if (peerConnection) {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+      }
+    });
+
+    socket.on('ice-candidate', async ({ candidate }) => {
+      if (peerConnection && candidate) {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    });
+
+    // Since customer is the one with the camera, initiate the offer
+    setupPeerConnection().then(async () => {
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      socket.emit('offer', { sessionId, offer });
+    });
+
+    // Pointer from technician
+    socket.on('pointer-move', ({ x, y }) => {
+      const pointer = document.getElementById('remotePointer');
+      pointer.style.left = (x * 100) + '%';
+      pointer.style.top = (y * 100) + '%';
+    });
+
+    socket.on('pointer-show', () => {
+      document.getElementById('remotePointer').classList.add('visible');
+    });
+
+    socket.on('pointer-hide', () => {
+      document.getElementById('remotePointer').classList.remove('visible');
+    });
+
+    // Drawing annotations
+    let isRemoteDrawing = false;
+
+    socket.on('draw-start', ({ x, y, color }) => {
+      isRemoteDrawing = true;
+      annoCtx.beginPath();
+      annoCtx.moveTo(x * annoCanvas.width, y * annoCanvas.height);
+      annoCtx.strokeStyle = color;
+      annoCtx.lineWidth = 3;
+      annoCtx.lineCap = 'round';
+    });
+
+    socket.on('draw-move', ({ x, y }) => {
+      if (isRemoteDrawing) {
+        annoCtx.lineTo(x * annoCanvas.width, y * annoCanvas.height);
+        annoCtx.stroke();
+      }
+    });
+
+    socket.on('draw-end', () => {
+      isRemoteDrawing = false;
+      annoCtx.closePath();
+    });
+
+    socket.on('clear-annotations', () => {
+      annoCtx.clearRect(0, 0, annoCanvas.width, annoCanvas.height);
+    });
+
+    // Freeze frame
+    socket.on('freeze-frame', () => {
+      document.getElementById('localVideo').pause();
+      document.getElementById('freezeBanner').classList.add('active');
+    });
+
+    socket.on('unfreeze-frame', () => {
+      document.getElementById('localVideo').play();
+      document.getElementById('freezeBanner').classList.remove('active');
+    });
+
+    // Camera switch
+    socket.on('switch-camera', async () => {
+      currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
+      const tracks = localStream.getTracks();
+      tracks.forEach(t => t.stop());
+
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: currentFacing, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+        document.getElementById('localVideo').srcObject = localStream;
+
+        // Replace track in peer connection
+        const videoTrack = localStream.getVideoTracks()[0];
+        const senders = peerConnection.getSenders();
+        const videoSender = senders.find(s => s.track && s.track.kind === 'video');
+        if (videoSender) {
+          videoSender.replaceTrack(videoTrack);
+        }
+      } catch (err) {
+        console.error('Camera switch error:', err);
+      }
+    });
+
+    // Screenshot
+    socket.on('take-screenshot', () => {
+      const video = document.getElementById('localVideo');
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = video.videoWidth;
+      tempCanvas.height = video.videoHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(video, 0, 0);
+      // Also draw annotations
+      tempCtx.drawImage(annoCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+      const data = tempCanvas.toDataURL('image/jpeg', 0.9);
+      socket.emit('screenshot-data', { sessionId, data });
+    });
+
+    // Chat from technician
+    socket.on('chat-message', ({ message }) => {
+      showTechBubble(message);
+    });
+  }
+
+  async function setupPeerConnection() {
+    const config = {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+      ]
+    };
+
+    peerConnection = new RTCPeerConnection(config);
+
+    // Add local tracks
+    localStream.getTracks().forEach(track => {
+      peerConnection.addTrack(track, localStream);
+    });
+
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit('ice-candidate', { sessionId, candidate: event.candidate });
+      }
+    };
+  }
+
+  function sendCustomerChat() {
+    const input = document.getElementById('customerChatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    socket.emit('chat-message', { sessionId, message: msg, sender: 'customer' });
+    input.value = '';
+  }
+
+  function showTechBubble(message) {
+    const bubble = document.getElementById('techBubble');
+    document.getElementById('bubbleText').textContent = message;
+    bubble.classList.add('visible');
+    clearTimeout(bubbleTimeout);
+    bubbleTimeout = setTimeout(() => bubble.classList.remove('visible'), 8000);
+  }
+
+  function updateConnection(connected) {
+    const pill = document.getElementById('connPill');
+    const text = document.getElementById('connText');
+    if (connected) {
+      pill.classList.remove('disconnected');
+      text.textContent = 'Connected';
+    } else {
+      pill.classList.add('disconnected');
+      text.textContent = 'Disconnected';
+    }
+  }
+
+  function endSession() {
+    if (localStream) {
+      localStream.getTracks().forEach(t => t.stop());
+    }
+    if (peerConnection) {
+      peerConnection.close();
+    }
+    if (socket) {
+      socket.disconnect();
+    }
+    document.getElementById('videoScreen').classList.remove('active');
+    document.getElementById('welcomeScreen').classList.remove('hidden');
+  }
+</script>
+</body>
+</html>

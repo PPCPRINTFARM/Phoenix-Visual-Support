@@ -1,0 +1,15 @@
+{
+  "name": "phoenix-visual-support",
+  "version": "1.0.0",
+  "description": "Phoenix Phase Converters - Remote Visual Support Tool",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "uuid": "^9.0.0"
+  }
+}
