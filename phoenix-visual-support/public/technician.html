@@ -746,6 +746,7 @@
   let socket;
   let peerConnection;
   let currentSessionId = null;
+  let technicianToken = null;
   let currentTool = null;
   let drawColor = '#ff3b5c';
   let isFrozen = false;
@@ -765,7 +766,13 @@
 
   // Initialize socket
   function initSocket() {
+    if (socket) socket.disconnect();
     socket = io();
+
+    socket.on('join-error', ({ message }) => {
+      updateStatus('', 'Session unavailable');
+      showToast(message || 'Could not join this session. Start a new one.');
+    });
 
     socket.on('peer-joined', ({ role }) => {
       if (role === 'customer') {
@@ -812,6 +819,7 @@
   }
 
   async function setupPeerConnection() {
+    if (peerConnection) peerConnection.close();
     const config = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -835,25 +843,37 @@
     };
   }
 
-  async function createSession() {
-    const res = await fetch('/api/create-session');
-    const data = await res.json();
+  async function useSession(data) {
+    if (!data?.sessionId || !data?.technicianToken) throw new Error('Session details are missing');
     currentSessionId = data.sessionId;
+    technicianToken = data.technicianToken;
 
-    const fullLink = `${window.location.origin}${data.link}`;
+    const fullLink = `${window.location.origin}/join/${data.sessionId}`;
     document.getElementById('sessionLink').value = fullLink;
     document.getElementById('sessionLinkBox').classList.add('active');
     document.getElementById('sessionIdBadge').style.display = 'flex';
-    document.getElementById('sessionIdText').textContent = data.sessionId;
+    document.getElementById('sessionIdText').textContent = data.sessionId.slice(0, 8);
+    document.getElementById('createSessionBtn').disabled = true;
 
     updateStatus('waiting', 'Waiting for customer...');
 
     // Connect socket to session
     initSocket();
-    socket.emit('join-session', { sessionId: currentSessionId, role: 'technician' });
+    socket.emit('join-session', { sessionId: currentSessionId, role: 'technician', technicianToken });
     await setupPeerConnection();
 
-    showToast('🔗 Session created! Send the link to your customer.');
+    showToast('🔗 Session ready. Send the link to your customer.');
+  }
+
+  async function createSession() {
+    if (currentSessionId) return;
+    try {
+      const res = await fetch('/api/create-session', { cache: 'no-store' });
+      if (!res.ok) throw new Error('Could not create a session');
+      await useSession(await res.json());
+    } catch (error) {
+      showToast(error.message || 'Could not create a session');
+    }
   }
 
   function copyLink() {
@@ -1001,7 +1021,12 @@
     const div = document.createElement('div');
     div.className = `chat-msg ${type}`;
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    div.innerHTML = `${message}<div class="msg-time">${time}</div>`;
+    const body = document.createElement('span');
+    body.textContent = message;
+    const stamp = document.createElement('div');
+    stamp.className = 'msg-time';
+    stamp.textContent = time;
+    div.append(body, stamp);
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
   }
@@ -1009,9 +1034,13 @@
   // Screenshots
   function renderScreenshots() {
     const grid = document.getElementById('screenshotsGrid');
-    grid.innerHTML = screenshots.map((s, i) =>
-      `<img class="screenshot-thumb" src="${s}" onclick="viewScreenshot(${i})">`
-    ).join('');
+    grid.replaceChildren(...screenshots.map((s, i) => {
+      const img = document.createElement('img');
+      img.className = 'screenshot-thumb';
+      img.src = s;
+      img.addEventListener('click', () => viewScreenshot(i));
+      return img;
+    }));
   }
 
   function viewScreenshot(index) {
@@ -1037,6 +1066,15 @@
 
   // Init
   resizeCanvas();
+  // PHXQ creates the session and opens this exact technician link. The token is
+  // kept in the URL fragment so it is not sent in HTTP requests or access logs.
+  const requestedSession = new URLSearchParams(window.location.search).get('session');
+  const requestedToken = new URLSearchParams(window.location.hash.slice(1)).get('techToken');
+  if (requestedSession && requestedToken) {
+    useSession({ sessionId: requestedSession, technicianToken: requestedToken }).catch((error) => {
+      showToast(error.message || 'Could not join the session');
+    });
+  }
 </script>
 </body>
 </html>

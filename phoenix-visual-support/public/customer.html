@@ -567,10 +567,18 @@
     socket = io();
 
     socket.emit('join-session', { sessionId, role: 'customer' });
+    socket.on('join-error', ({ message }) => {
+      updateConnection(false);
+      document.getElementById('bubbleText').textContent = message || 'This session is unavailable. Ask for a new link.';
+      document.getElementById('techBubble').classList.add('visible');
+    });
 
     socket.on('peer-joined', ({ role }) => {
       if (role === 'technician') {
         updateConnection(true);
+        // The customer may have opened the link before the technician tab.
+        // Send a fresh offer when the technician joins so video still starts.
+        sendOffer();
       }
     });
 
@@ -602,11 +610,7 @@
     });
 
     // Since customer is the one with the camera, initiate the offer
-    setupPeerConnection().then(async () => {
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-      socket.emit('offer', { sessionId, offer });
-    });
+    sendOffer();
 
     // Pointer from technician
     socket.on('pointer-move', ({ x, y }) => {
@@ -708,6 +712,7 @@
   }
 
   async function setupPeerConnection() {
+    if (peerConnection) return;
     const config = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -727,6 +732,19 @@
         socket.emit('ice-candidate', { sessionId, candidate: event.candidate });
       }
     };
+  }
+
+  async function sendOffer() {
+    try {
+      await setupPeerConnection();
+      if (peerConnection.signalingState !== 'stable') return;
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      socket.emit('offer', { sessionId, offer });
+    } catch (error) {
+      console.error('Could not start camera connection', error);
+      updateConnection(false);
+    }
   }
 
   function sendCustomerChat() {
