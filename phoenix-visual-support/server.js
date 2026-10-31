@@ -66,6 +66,8 @@ app.get('/join/:sessionId', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'customer.html'));
 });
 
+require('./assistant').installAssistant({ app, io, activeSession });
+
 // WebRTC Signaling
 io.on('connection', (socket) => {
   console.log('Socket connected:', socket.id);
