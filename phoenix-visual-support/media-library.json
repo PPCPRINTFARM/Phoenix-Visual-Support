@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "id": "pl-ph-wiring",
+    "title": "PL and PH model wiring diagram",
+    "caption": "PL and PH models. Breaker at least 2x the full load of your equipment. Use a disconnect if the run is over 50 feet. Must be installed by a licensed industrial electrician.",
+    "type": "image",
+    "url": "/media/pl-ph-wiring-diagram.jpg"
+  },
+  {
+    "id": "nl-nh-wiring",
+    "title": "NL and NH model wiring diagram",
+    "caption": "NL and NH models (no start/stop button on the lid). Breaker at least 2x the full load of your equipment. Use a disconnect if the run is over 50 feet. Must be installed by a licensed industrial electrician.",
+    "type": "image",
+    "url": "/media/nl-nh-wiring-diagram.jpg"
+  },
+  {
+    "id": "start-stop-panel",
+    "title": "Start / stop button and volt meter panel",
+    "caption": "Green button starts the converter, red button stops it. The volts display is on the right.",
+    "type": "image",
+    "url": "/media/start-stop-panel.png"
+  },
+  {
+    "id": "start-stop-wiring-video",
+    "title": "Wiring a start and stop button",
+    "caption": "Animated walkthrough of wiring the start and stop button module.",
+    "type": "video",
+    "url": "/media/start-stop-wiring.mp4"
+  }
+]

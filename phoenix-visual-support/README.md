@@ -84,6 +84,10 @@ than letting it make up URLs:
 ]
 ```
 
+Files in `public/media/` are served by this app, so a catalog `url` can be a path such as
+`/media/pl-ph-wiring-diagram.jpg`. The catalog ships with the PL/PH and NL/NH wiring diagrams,
+the start/stop panel photo, and the start/stop wiring video.
+
 ### Security
 
 - Tool requests are accepted only with a valid Retell signature or the shared secret header.
