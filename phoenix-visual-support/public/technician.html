@@ -425,6 +425,15 @@
     border-bottom-left-radius: 4px;
   }
 
+  .chat-msg.ai {
+    align-self: center;
+    max-width: 95%;
+    background: rgba(255, 170, 0, 0.12);
+    border: 1px solid rgba(255, 170, 0, 0.35);
+    color: var(--text);
+    font-size: 12px;
+  }
+
   .chat-msg .msg-time {
     font-size: 10px;
     opacity: 0.6;
@@ -809,6 +818,10 @@
 
     socket.on('chat-message', ({ message, sender }) => {
       addChatMessage(message, 'customer');
+    });
+
+    socket.on('ai-activity', ({ text }) => {
+      addChatMessage(`🤖 ${text}`, 'ai');
     });
 
     socket.on('screenshot-data', ({ data }) => {

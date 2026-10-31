@@ -365,7 +365,7 @@
     position: absolute;
     bottom: 80px;
     left: 16px;
-    right: 16px;
+    right: 92px;
     z-index: 20;
     display: none;
   }
@@ -440,6 +440,143 @@
     font-weight: 600;
     cursor: pointer;
   }
+
+  /* AI assistant orb (Retell voice agent) */
+  .ai-orb {
+    position: absolute;
+    right: 16px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    z-index: 25;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: radial-gradient(circle at 35% 30%, #ffd27a, var(--phoenix-orange) 55%, #b8360e);
+    box-shadow: 0 0 24px rgba(255, 107, 43, 0.55);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .ai-orb.hidden { display: none; }
+  .ai-orb:active { transform: scale(0.94); }
+  .ai-orb.connecting { animation: orb-breathe 1.2s ease-in-out infinite; }
+  .ai-orb.live { box-shadow: 0 0 28px rgba(0, 214, 143, 0.6); }
+  .ai-orb.talking { animation: orb-talk 0.6s ease-in-out infinite alternate; }
+
+  @keyframes orb-breathe {
+    0%, 100% { transform: scale(0.95); opacity: 0.75; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
+
+  @keyframes orb-talk {
+    from { transform: scale(1); box-shadow: 0 0 24px rgba(255, 107, 43, 0.55); }
+    to { transform: scale(1.12); box-shadow: 0 0 44px rgba(255, 170, 0, 0.85); }
+  }
+
+  .ai-orb-label {
+    position: absolute;
+    right: 88px;
+    bottom: calc(102px + env(safe-area-inset-bottom));
+    z-index: 25;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.65);
+    font-size: 11px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .ai-orb-label:empty { display: none; }
+
+  .ai-looking {
+    position: absolute;
+    inset: 0;
+    z-index: 12;
+    pointer-events: none;
+    border: 4px solid var(--phoenix-amber);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .ai-looking.active { opacity: 1; }
+
+  /* Diagrams / videos / links pushed by the assistant or technician */
+  .media-panel {
+    position: absolute;
+    top: max(60px, calc(env(safe-area-inset-top) + 48px));
+    left: 12px;
+    right: 12px;
+    z-index: 22;
+    max-height: 58%;
+    display: none;
+    flex-direction: column;
+    background: rgba(18,18,26,0.96);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    animation: bubble-in 0.25s ease;
+  }
+
+  .media-panel.visible { display: flex; }
+
+  .media-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .media-head span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .media-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .media-body { flex: 1; min-height: 0; background: black; display: flex; }
+  .media-body img, .media-body video { width: 100%; max-height: 48vh; object-fit: contain; }
+  .media-body iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }
+
+  .media-link {
+    flex: 1;
+    padding: 16px;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-dim);
+    word-break: break-all;
+  }
+
+  .media-link a {
+    align-self: flex-start;
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: var(--phoenix-orange);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    word-break: normal;
+  }
+
+  .media-caption { padding: 10px 12px; font-size: 13px; line-height: 1.4; }
+  .media-caption:empty { display: none; }
 </style>
 </head>
 <body>
@@ -490,7 +627,20 @@
     <canvas class="annotation-canvas" id="annotationCanvas"></canvas>
     <div class="remote-pointer" id="remotePointer"></div>
     <div class="freeze-banner" id="freezeBanner">⏸️ Frame Frozen</div>
+    <div class="ai-looking" id="aiLooking"></div>
   </div>
+
+  <div class="media-panel" id="mediaPanel" role="dialog" aria-label="Shared by support">
+    <div class="media-head">
+      <span id="mediaTitle">Shared by support</span>
+      <button class="media-close" onclick="hideMedia()" aria-label="Close">✕</button>
+    </div>
+    <div class="media-body" id="mediaBody"></div>
+    <div class="media-caption" id="mediaCaption"></div>
+  </div>
+
+  <div class="ai-orb-label" id="aiOrbLabel">Tap to talk</div>
+  <button class="ai-orb" id="aiOrb" onclick="toggleAssistant()" aria-label="Talk to the Phoenix AI assistant">🎙️</button>
 
   <div class="tech-bubble" id="techBubble">
     <div class="bubble-content">
@@ -555,6 +705,7 @@
 
       resizeAnnoCanvas();
       initSocket();
+      checkAssistant();
 
     } catch (err) {
       console.error('Camera error:', err);
@@ -709,6 +860,132 @@
     socket.on('chat-message', ({ message }) => {
       showTechBubble(message);
     });
+
+    // The AI assistant asks for one still frame to look at
+    socket.on('ai-capture-frame', (ack) => {
+      if (typeof ack !== 'function') return;
+      ack({ data: captureFrame() });
+      const looking = document.getElementById('aiLooking');
+      looking.classList.add('active');
+      setTimeout(() => looking.classList.remove('active'), 900);
+    });
+
+    socket.on('show-media', showMedia);
+    socket.on('hide-media', hideMedia);
+  }
+
+  function captureFrame() {
+    const video = document.getElementById('localVideo');
+    if (!video.videoWidth) return null;
+    const scale = Math.min(1, 1024 / Math.max(video.videoWidth, video.videoHeight));
+    const frame = document.createElement('canvas');
+    frame.width = Math.round(video.videoWidth * scale);
+    frame.height = Math.round(video.videoHeight * scale);
+    frame.getContext('2d').drawImage(video, 0, 0, frame.width, frame.height);
+    return frame.toDataURL('image/jpeg', 0.8);
+  }
+
+  function showMedia({ kind, url, embedUrl, title, caption }) {
+    const body = document.getElementById('mediaBody');
+    let el;
+    if (kind === 'image') {
+      el = document.createElement('img');
+      el.src = url;
+      el.alt = title || 'Diagram';
+    } else if (kind === 'video' && embedUrl) {
+      el = document.createElement('iframe');
+      el.src = embedUrl;
+      el.allow = 'autoplay; encrypted-media; picture-in-picture';
+      el.allowFullscreen = true;
+    } else if (kind === 'video') {
+      el = document.createElement('video');
+      el.src = url;
+      el.controls = true;
+      el.autoplay = true;
+      el.playsInline = true;
+      el.muted = true; // autoplay needs muted; customer can unmute
+    } else {
+      el = document.createElement('div');
+      el.className = 'media-link';
+      const text = document.createElement('div');
+      text.textContent = url;
+      const open = document.createElement('a');
+      open.href = url;
+      open.target = '_blank';
+      open.rel = 'noopener noreferrer';
+      open.textContent = 'Open link';
+      el.append(text, open);
+    }
+    body.replaceChildren(el);
+    document.getElementById('mediaTitle').textContent = title || 'Shared by support';
+    document.getElementById('mediaCaption').textContent = caption || '';
+    document.getElementById('mediaPanel').classList.add('visible');
+  }
+
+  function hideMedia() {
+    document.getElementById('mediaPanel').classList.remove('visible');
+    document.getElementById('mediaBody').replaceChildren();
+  }
+
+  // Retell AI voice assistant
+  let retellClient = null;
+  let assistantState = 'idle';
+
+  function setAssistantState(state, label) {
+    assistantState = state;
+    const orb = document.getElementById('aiOrb');
+    orb.classList.remove('connecting', 'live', 'talking');
+    if (state !== 'idle') orb.classList.add(state);
+    orb.textContent = state === 'idle' ? '🎙️' : '■';
+    document.getElementById('aiOrbLabel').textContent = label;
+  }
+
+  async function toggleAssistant() {
+    if (assistantState !== 'idle') {
+      if (retellClient) retellClient.stopCall();
+      setAssistantState('idle', 'Tap to talk');
+      return;
+    }
+    setAssistantState('connecting', 'Connecting…');
+    try {
+      const res = await fetch('/api/retell/web-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      });
+      const call = await res.json();
+      if (!res.ok) throw new Error(call.error || 'Assistant unavailable');
+
+      if (!retellClient) {
+        const { RetellWebClient } = await import('https://cdn.jsdelivr.net/npm/retell-client-js-sdk@3.0.3/+esm');
+        retellClient = new RetellWebClient();
+        retellClient.on('call_started', () => setAssistantState('live', 'Listening…'));
+        retellClient.on('agent_start_talking', () => setAssistantState('talking', 'Assistant speaking'));
+        retellClient.on('agent_stop_talking', () => setAssistantState('live', 'Listening…'));
+        retellClient.on('call_ended', () => setAssistantState('idle', 'Tap to talk'));
+        retellClient.on('error', (err) => {
+          console.error('Assistant error', err);
+          retellClient.stopCall();
+          setAssistantState('idle', 'Assistant disconnected');
+        });
+      }
+      await retellClient.startCall({ accessToken: call.accessToken });
+    } catch (err) {
+      console.error('Could not start assistant', err);
+      setAssistantState('idle', err.message || 'Assistant unavailable');
+    }
+  }
+
+  async function checkAssistant() {
+    try {
+      const res = await fetch('/api/retell/status', { cache: 'no-store' });
+      const { enabled } = await res.json();
+      document.getElementById('aiOrb').classList.toggle('hidden', !enabled);
+      if (!enabled) document.getElementById('aiOrbLabel').textContent = '';
+    } catch {
+      document.getElementById('aiOrb').classList.add('hidden');
+      document.getElementById('aiOrbLabel').textContent = '';
+    }
   }
 
   async function setupPeerConnection() {
@@ -776,6 +1053,9 @@
   }
 
   function endSession() {
+    if (retellClient && assistantState !== 'idle') retellClient.stopCall();
+    setAssistantState('idle', 'Tap to talk');
+    hideMedia();
     if (localStream) {
       localStream.getTracks().forEach(t => t.stop());
     }

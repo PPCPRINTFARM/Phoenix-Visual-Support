@@ -3,14 +3,19 @@ const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
 const { randomUUID, randomBytes, timingSafeEqual } = require('crypto');
+const { attachAssistant } = require('./ai-assistant');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' }
+  cors: { origin: '*' },
+  // Camera frames for the AI assistant travel over the socket.
+  maxHttpBufferSize: 3e6
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+// Keep the raw body so Retell webhook signatures can be verified.
+app.use(express.json({ limit: '256kb', verify: (req, res, buf) => { req.rawBody = buf.toString('utf8'); } }));
 
 // Store active sessions
 const sessions = new Map();
@@ -32,6 +37,9 @@ function validTechnicianToken(session, supplied) {
   const received = Buffer.from(supplied);
   return expected.length === received.length && timingSafeEqual(expected, received);
 }
+
+const assistantOptions = {};
+attachAssistant({ app, io, activeSession, options: assistantOptions });
 
 // Technician dashboard
 app.get('/', (req, res) => {
@@ -222,4 +230,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, server };
+module.exports = { app, server, assistantOptions };

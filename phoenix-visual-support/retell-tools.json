@@ -1,0 +1,50 @@
+[
+  {
+    "type": "custom",
+    "name": "look_at_camera",
+    "description": "Look through the customer's live phone camera. Use whenever you need to see the equipment, read a nameplate, check wiring, lights or a meter, or confirm the customer did a step. Ask the customer to hold the camera steady on the thing first.",
+    "url": "https://YOUR-APP.onrender.com/api/retell/tools/look",
+    "method": "POST",
+    "timeout_ms": 20000,
+    "speak_during_execution": true,
+    "execution_message_description": "Tell the customer you're taking a look, e.g. 'Hold that steady, let me take a look.'",
+    "headers": { "x-phoenix-tool-secret": "SAME-VALUE-AS-RETELL_TOOL_SECRET" },
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "question": { "type": "string", "description": "What you want to find out from the image, e.g. 'What does the motor nameplate say?'" }
+      }
+    }
+  },
+  {
+    "type": "custom",
+    "name": "show_visual",
+    "description": "Show a diagram, photo, video or web page on the customer's screen over their camera view. Prefer media_id from the catalog: {{media_catalog}}",
+    "url": "https://YOUR-APP.onrender.com/api/retell/tools/show",
+    "method": "POST",
+    "timeout_ms": 8000,
+    "speak_during_execution": false,
+    "headers": { "x-phoenix-tool-secret": "SAME-VALUE-AS-RETELL_TOOL_SECRET" },
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "media_id": { "type": "string", "description": "ID of an item from the media catalog." },
+        "url": { "type": "string", "description": "An https URL on an approved site, only if nothing in the catalog fits." },
+        "type": { "type": "string", "enum": ["image", "video", "link"] },
+        "title": { "type": "string" },
+        "caption": { "type": "string", "description": "One short line telling the customer what to look at." }
+      }
+    }
+  },
+  {
+    "type": "custom",
+    "name": "clear_visual",
+    "description": "Remove whatever you showed so the customer sees their live camera again.",
+    "url": "https://YOUR-APP.onrender.com/api/retell/tools/clear",
+    "method": "POST",
+    "timeout_ms": 5000,
+    "speak_during_execution": false,
+    "headers": { "x-phoenix-tool-secret": "SAME-VALUE-AS-RETELL_TOOL_SECRET" },
+    "parameters": { "type": "object", "properties": {} }
+  }
+]
