@@ -1,17 +1,324 @@
 [
   {
-    "id": "pl-ph-wiring",
-    "title": "PL and PH model wiring diagram",
-    "caption": "PL and PH models. Breaker at least 2x the full load of your equipment. Use a disconnect if the run is over 50 feet. Must be installed by a licensed industrial electrician.",
+    "id": "nl-nh-connection",
+    "title": "NL & NH model connection overview",
+    "caption": "High-level connection overview for the standard NL Series (230V→230V) and NH Series (460V→460V) rotary phase converters. Shows L1/L2 input, capacitor bank, contactor path, and T1/T2/T3 output routing to your equipment. (Manual p. 11)",
     "type": "image",
-    "url": "/media/pl-ph-wiring-diagram.jpg"
+    "url": "/media/diagrams/nl-nh-connection.jpg"
   },
   {
-    "id": "nl-nh-wiring",
-    "title": "NL and NH model wiring diagram",
-    "caption": "NL and NH models (no start/stop button on the lid). Breaker at least 2x the full load of your equipment. Use a disconnect if the run is over 50 feet. Must be installed by a licensed industrial electrician.",
+    "id": "gp100nl-100hp",
+    "title": "GP100NL 100 HP configuration",
+    "caption": "Full internal wiring for the flagship GP100NL. Note the multiple parallel run capacitors used to hold voltage balance across a 100 HP idler under load. (Manual p. 12)",
     "type": "image",
-    "url": "/media/nl-nh-wiring-diagram.jpg"
+    "url": "/media/diagrams/gp100nl-100hp.jpg"
+  },
+  {
+    "id": "nl40-terminal-block",
+    "title": "NL Model 40 terminal block connections (L3, L2, L1)",
+    "caption": "Terminal-block detail for the GP40NL. Use this diagram when landing your input feeder wires — pay close attention to the L3 terminal position, which is unique to certain revisions. (Manual p. 13)",
+    "type": "image",
+    "url": "/media/diagrams/nl40-terminal-block.jpg"
+  },
+  {
+    "id": "gp40nl-original",
+    "title": "GP40NL original wiring diagram",
+    "caption": "Original-revision GP40NL wiring, applicable to both NL and NH configurations. If your GP40NL was shipped before 2022 and does not match the page 5 layout, use this diagram. (Manual p. 14)",
+    "type": "image",
+    "url": "/media/diagrams/gp40nl-original.jpg"
+  },
+  {
+    "id": "nla-autolink-compressor",
+    "title": "NLA / AutoLink compressor duty wiring",
+    "caption": "AutoLink wiring for a compressor-duty installation. AutoLink prevents the compressor from restarting simultaneously with the converter after a power interruption — the #1 cause of overcurrent trips on compressor circuits. (Manual p. 15)",
+    "type": "image",
+    "url": "/media/diagrams/nla-autolink-compressor.jpg"
+  },
+  {
+    "id": "pl-ph-connection",
+    "title": "PL & PH model connection overview",
+    "caption": "High-level overview for PL Series (230V→230V, front start/stop) and PH Series (460V→460V, front start/stop). The T1/T2 timer terminals for the start/stop control circuit are shown. (Manual p. 16)",
+    "type": "image",
+    "url": "/media/diagrams/pl-ph-connection.jpg"
+  },
+  {
+    "id": "pl-panel-layout",
+    "title": "PL model panel layout and connections",
+    "caption": "Physical panel layout of a PL rotary. Use this diagram to identify each component during any panel inspection: contactor, start caps, run caps, voltage relay, distribution block, and terminal strip. (Manual p. 17)",
+    "type": "image",
+    "url": "/media/diagrams/pl-panel-layout.jpg"
+  },
+  {
+    "id": "pl-internal-wiring",
+    "title": "PL model detailed internal wiring",
+    "caption": "Internal wire routing for the PL series. Every color-coded wire, terminal number, and jumper is shown. (Manual p. 18)",
+    "type": "image",
+    "url": "/media/diagrams/pl-internal-wiring.jpg"
+  },
+  {
+    "id": "pl-complete-wiring",
+    "title": "PL model complete wiring with notes",
+    "caption": "PL complete wiring including installer notes on wire sizing, torque values, and the small-diameter jumper wire that ties the timer circuit to the contactor coil. (Manual p. 19)",
+    "type": "image",
+    "url": "/media/diagrams/pl-complete-wiring.jpg"
+  },
+  {
+    "id": "pl-ph-schematic",
+    "title": "PL & PH full schematic",
+    "caption": "Full electrical schematic (not physical layout) for the PL/PH series. Use this diagram when troubleshooting circuits by function rather than by physical location. (Manual p. 20)",
+    "type": "image",
+    "url": "/media/diagrams/pl-ph-schematic.jpg"
+  },
+  {
+    "id": "plt-plta-transformer",
+    "title": "PLT & PLTA transformer configurations",
+    "caption": "Both transformer-package configurations shown side by side. PLT uses an external fusable disconnect between converter and transformer; PLTA integrates the AutoLink system for lockout protection during power interruptions. (Manual p. 21)",
+    "type": "image",
+    "url": "/media/diagrams/plt-plta-transformer.jpg"
+  },
+  {
+    "id": "plta-autolink-transformer",
+    "title": "PLTA AutoLink transformer package",
+    "caption": "Complete wiring for a PLTA installation. The AutoLink block sits between the 230V three-phase output of the converter and the 460V input of the step-up transformer, preventing simultaneous reenergization after utility restoration. (Manual p. 22)",
+    "type": "image",
+    "url": "/media/diagrams/plta-autolink-transformer.jpg"
+  },
+  {
+    "id": "nh-340v-panel",
+    "title": "NH model 340V panel layout and motor connection",
+    "caption": "NH panel layout showing the 340V tap arrangement and motor connections. NH-Series converters take a 460V single-phase input; internal jumpers select the correct capacitor voltage rating. (Manual p. 23)",
+    "type": "image",
+    "url": "/media/diagrams/nh-340v-panel.jpg"
+  },
+  {
+    "id": "nh-460v-wiring",
+    "title": "NH 460V complete high-voltage wiring",
+    "caption": "Full NH high-voltage wiring at 460V input. All conductors, capacitors, and contactor coils are rated for the higher operating voltage. (Manual p. 24)",
+    "type": "image",
+    "url": "/media/diagrams/nh-460v-wiring.jpg"
+  },
+  {
+    "id": "ph-340v-panel",
+    "title": "PH model 340V panel layout and connections",
+    "caption": "PH-series panel layout with the front-panel start/stop button wired into the 340V tap configuration. (Manual p. 25)",
+    "type": "image",
+    "url": "/media/diagrams/ph-340v-panel.jpg"
+  },
+  {
+    "id": "ph-460v-start-stop",
+    "title": "PH 460V start/stop wiring",
+    "caption": "Complete PH high-voltage wiring at 460V input including start/stop control circuit and timer. (Manual p. 26)",
+    "type": "image",
+    "url": "/media/diagrams/ph-460v-start-stop.jpg"
+  },
+  {
+    "id": "dualzone-schematic",
+    "title": "DualZone schematic and PL configuration wiring",
+    "caption": "DualZone overall electrical schematic combined with the PL-style start/stop control circuit. Shows how the two idler motors share a single control panel while each receives its own dedicated capacitor bank. (Manual p. 27)",
+    "type": "image",
+    "url": "/media/diagrams/dualzone-schematic.jpg"
+  },
+  {
+    "id": "dualzone-idler-terminals",
+    "title": "DualZone dual idler motor terminal connections",
+    "caption": "Physical terminal connections for both idler motors in a DualZone unit. Motor 1 handles the base load; Motor 2 auto-cycles in when the current draw exceeds the base-load threshold. (Manual p. 28)",
+    "type": "image",
+    "url": "/media/diagrams/dualzone-idler-terminals.jpg"
+  },
+  {
+    "id": "idler-motor-cutaway",
+    "title": "Idler motor cutaway (internal components)",
+    "caption": "Cutaway of a three-phase idler motor showing rotor, stator, windings, bearings, cooling fan, and terminal box. Reference this diagram anytime you need to identify the internal component causing noise, vibration, or heat. (Manual p. 29)",
+    "type": "image",
+    "url": "/media/diagrams/idler-motor-cutaway.jpg"
+  },
+  {
+    "id": "motor-9-12-lead",
+    "title": "9-lead and 12-lead motor wiring (230V and 460V)",
+    "caption": "Standard 9-lead and 12-lead three-phase motor wiring for low-voltage (230V) and high-voltage (460V) connections. This is the diagram you need when landing the T1/T2/T3 output from a Phoenix converter into your three-phase load motor. (Manual p. 30)",
+    "type": "image",
+    "url": "/media/diagrams/motor-9-12-lead.jpg"
+  },
+  {
+    "id": "application-wiring-notes",
+    "title": "Application wiring notes (multi-machine, sub-panels)",
+    "caption": "Application-specific wiring notes and common installation configurations. Includes multi-machine shop wiring, sub-panel feeds, and equipment-specific power routing. (Manual p. 31)",
+    "type": "image",
+    "url": "/media/diagrams/application-wiring-notes.jpg"
+  },
+  {
+    "id": "video-troubleshooting-overview",
+    "title": "Troubleshooting overview",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=wqbkEcqrl_0"
+  },
+  {
+    "id": "video-troubleshooting-walkthrough",
+    "title": "Troubleshooting walkthrough",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=bxn4VsamebQ"
+  },
+  {
+    "id": "video-voltage-drop-check",
+    "title": "Checking for voltage drop",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=gCGoN_nBVZ0"
+  },
+  {
+    "id": "video-voltage-drop-check-v1",
+    "title": "Checking for voltage drop (V1.0)",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=ZszESYXSSwE"
+  },
+  {
+    "id": "video-wiring-help-setup",
+    "title": "Technical support: wiring help & setup",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=kRVblowXkcQ"
+  },
+  {
+    "id": "video-install-rotary",
+    "title": "Installation: rotary phase converter",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=VxW43xdWeIM"
+  },
+  {
+    "id": "video-install-push-button",
+    "title": "Installation: push button models",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=2lkahdPZSUY"
+  },
+  {
+    "id": "video-install-larger-models",
+    "title": "Installation: larger models",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=1bx6URpngwM"
+  },
+  {
+    "id": "video-motor-9-lead-low-voltage",
+    "title": "9-lead motor, low voltage 230V",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=mVtPR4ESg6s"
+  },
+  {
+    "id": "video-motor-9-lead-alt",
+    "title": "9-lead motor (alternate)",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=UtUEzTf_tI8"
+  },
+  {
+    "id": "video-motor-12-lead-low-voltage",
+    "title": "12-lead motor, low voltage 230V",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=BujkVL6-fG4"
+  },
+  {
+    "id": "video-motor-12-lead-connect",
+    "title": "How to connect a 12-wire motor",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=BJ4zstQH-B8"
+  },
+  {
+    "id": "video-autostart",
+    "title": "AutoStart phase converter",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=I7FB9yCpa_U"
+  },
+  {
+    "id": "video-autostart-autooff-v2",
+    "title": "AutoStart / AutoOff V2",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=tuj1e5iulfE"
+  },
+  {
+    "id": "video-autolink-pairing",
+    "title": "AutoLink box: pairing converters",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=g6pZ038j9Gg"
+  },
+  {
+    "id": "video-autolink-real-customer",
+    "title": "AutoLink box in action (real customer)",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=O6OGRZ7YeIs"
+  },
+  {
+    "id": "video-autolink-pairing-3d",
+    "title": "Pairing to AutoLink (3D animation)",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=yjzqhyd5Oro"
+  },
+  {
+    "id": "video-autolink-overview",
+    "title": "AutoLink overview",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=QcsCWEmQXBM"
+  },
+  {
+    "id": "video-digital-autolink-intro",
+    "title": "Digital AutoLink introduction",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=QbqVHpzWDnA"
+  },
+  {
+    "id": "video-gpx-intro",
+    "title": "Introducing the digital GPX",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=1QptrhvgH4M"
+  },
+  {
+    "id": "video-gpx-new-digital",
+    "title": "New digital converters",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=Qd3Cm3o0X-U"
+  },
+  {
+    "id": "video-dualzone-overview",
+    "title": "DualZone overview",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=_1wJfM9_e3E"
+  },
+  {
+    "id": "video-inside-the-build",
+    "title": "Inside the build: rotary engineering",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=zXhlukOD3xk"
+  },
+  {
+    "id": "video-pl-2021-series",
+    "title": "PL 2021 series",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=oKz9H3hdNJU"
+  },
+  {
+    "id": "video-series-2022-overview",
+    "title": "2022 series overview",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=_2Gl4-yDwWY"
+  },
+  {
+    "id": "video-series-2021",
+    "title": "2021 series",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=X9vS0nZTjPY"
+  },
+  {
+    "id": "video-cnc-balanced-voltage",
+    "title": "CNC precision balanced voltage",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=fU0sDAQTuVY"
+  },
+  {
+    "id": "video-cnc-three-machine-test",
+    "title": "Real-world test: 3 CNC machines",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=zi9L7Jf3P8o"
+  },
+  {
+    "id": "video-cnc-hvac-welding",
+    "title": "Rotary & digital for CNC / HVAC / welding",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=9ZImw4W0EWk"
   },
   {
     "id": "start-stop-panel",
@@ -26,5 +333,18 @@
     "caption": "Animated walkthrough of wiring the start and stop button module.",
     "type": "video",
     "url": "/media/start-stop-wiring.mp4"
+  },
+  {
+    "id": "master-manual",
+    "title": "Master Troubleshooting & Wiring Manual (PDF)",
+    "caption": "The complete owner's guide: safety, wiring for every series, troubleshooting, maintenance and warranty.",
+    "type": "link",
+    "url": "/media/phoenix-master-manual.pdf"
+  },
+  {
+    "id": "youtube-channel",
+    "title": "Phoenix Phase Converters YouTube channel",
+    "type": "link",
+    "url": "https://www.youtube.com/@PhoenixConverters"
   }
 ]

@@ -548,8 +548,10 @@
     cursor: pointer;
   }
 
-  .media-body { flex: 1; min-height: 0; background: black; display: flex; }
+  .media-body { flex: 1; min-height: 0; background: black; display: flex; overflow: hidden; }
   .media-body img, .media-body video { width: 100%; max-height: 48vh; object-fit: contain; }
+  .media-zoom { display: flex; justify-content: center; width: 100%; background: white; }
+  .media-zoom img { width: auto; max-width: 100%; height: auto; max-height: 48vh; }
   .media-body iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }
 
   .media-link {
@@ -889,9 +891,16 @@
     const body = document.getElementById('mediaBody');
     let el;
     if (kind === 'image') {
-      el = document.createElement('img');
-      el.src = url;
-      el.alt = title || 'Diagram';
+      // Tapping opens the full-size image in a new tab, where pinch-zoom works.
+      el = document.createElement('a');
+      el.href = url;
+      el.target = '_blank';
+      el.rel = 'noopener noreferrer';
+      el.className = 'media-zoom';
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = title || 'Diagram';
+      el.appendChild(img);
     } else if (kind === 'video' && embedUrl) {
       el = document.createElement('iframe');
       el.src = embedUrl;
@@ -918,7 +927,8 @@
     }
     body.replaceChildren(el);
     document.getElementById('mediaTitle').textContent = title || 'Shared by support';
-    document.getElementById('mediaCaption').textContent = caption || '';
+    document.getElementById('mediaCaption').textContent =
+      (caption || '') + (kind === 'image' ? (caption ? ' ' : '') + 'Tap the picture to zoom.' : '');
     document.getElementById('mediaPanel').classList.add('visible');
   }
 
