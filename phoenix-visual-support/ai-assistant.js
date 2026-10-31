@@ -97,12 +97,14 @@ async function describeWithGemini(jpegBase64, question) {
 function attachAssistant({ app, io, activeSession, options = {} }) {
   // `options` overrides are read per request so tests can swap in fakes.
   const describeImage = (...a) => (options.describeImage || describeWithGemini)(...a);
+  // RETELL_KEY, when set, takes precedence over RETELL_API_KEY.
+  const retellApiKey = () => process.env.RETELL_KEY || process.env.RETELL_API_KEY;
   const verifySignature = (raw, sig) => options.verifySignature
     ? options.verifySignature(raw, sig)
-    : !!(process.env.RETELL_API_KEY && sig) && Retell.verify(raw, process.env.RETELL_API_KEY, sig);
+    : !!(retellApiKey() && sig) && Retell.verify(raw, retellApiKey(), sig);
   const createWebCall = (body) => options.createWebCall
     ? options.createWebCall(body)
-    : new Retell({ apiKey: process.env.RETELL_API_KEY }).call.createWebCall(body);
+    : new Retell({ apiKey: retellApiKey() }).call.createWebCall(body);
   const library = () => options.mediaLibrary || loadMediaLibrary();
 
   // Retell call_id -> visual support session id. Only calls this server created can act on a session.
@@ -126,7 +128,7 @@ function attachAssistant({ app, io, activeSession, options = {} }) {
     io.to(sessionId).emit('ai-activity', { text });
   }
 
-  const configured = () => !!process.env.RETELL_AGENT_ID && (!!options.createWebCall || !!process.env.RETELL_API_KEY);
+  const configured = () => !!process.env.RETELL_AGENT_ID && (!!options.createWebCall || !!retellApiKey());
 
   app.get('/api/retell/status', (req, res) => {
     res.set('Cache-Control', 'no-store');

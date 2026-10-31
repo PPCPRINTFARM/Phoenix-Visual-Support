@@ -54,6 +54,7 @@ person can follow along and take over.
 | Variable | Purpose |
 |----------|---------|
 | `RETELL_API_KEY` | Creates web calls and verifies Retell's `x-retell-signature` on tool requests |
+| `RETELL_KEY` | Optional; overrides `RETELL_API_KEY` when set |
 | `RETELL_AGENT_ID` | The Retell agent the orb talks to |
 | `RETELL_TOOL_SECRET` | Shared secret Retell sends in the `x-phoenix-tool-secret` header |
 | `GEMINI_API_KEY` | Google Gemini key for camera vision |
