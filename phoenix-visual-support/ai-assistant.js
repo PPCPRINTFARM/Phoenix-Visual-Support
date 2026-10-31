@@ -228,8 +228,10 @@ function attachAssistant({ app, io, activeSession, options = {} }) {
       return 'Give either media_id from the catalog or a url.';
     }
 
+    // Catalog items may point at files this app serves itself, e.g. "/media/diagram.jpg".
+    const local = !!args.media_id && /^\/(?!\/)/.test(item.url);
     let url;
-    try { url = new URL(item.url); } catch { return 'That URL is not valid.'; }
+    try { url = new URL(item.url, local ? 'https://app.local' : undefined); } catch { return 'That URL is not valid.'; }
     if (url.protocol !== 'https:') return 'Only https links can be shown.';
     if (!args.media_id && !hostAllowed(url, allowedHosts())) {
       return 'That website is not on the approved list. Use an item from the media catalog instead.';
@@ -240,7 +242,7 @@ function attachAssistant({ app, io, activeSession, options = {} }) {
     const yt = kind === 'video' ? youtubeId(url) : null;
     const payload = {
       kind,
-      url: url.href,
+      url: local ? url.pathname : url.href,
       embedUrl: yt ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(yt)}?autoplay=1&playsinline=1` : null,
       title: String(item.title || args.title || '').slice(0, 120),
       caption: String(args.caption || item.caption || '').slice(0, 500)

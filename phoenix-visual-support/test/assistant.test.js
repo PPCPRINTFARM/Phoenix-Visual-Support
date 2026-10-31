@@ -14,7 +14,10 @@ const seen = [];
 before(async () => {
   assistantOptions.createWebCall = async (body) => ({ call_id: `call_${seen.length}`, access_token: 'tok', body });
   assistantOptions.describeImage = async (b64, question) => { seen.push({ b64, question }); return 'A rotary phase converter with a tripped breaker.'; };
-  assistantOptions.mediaLibrary = [{ id: 'wiring', title: 'Wiring diagram', url: 'https://example.com/wiring.png' }];
+  assistantOptions.mediaLibrary = [
+    { id: 'wiring', title: 'Wiring diagram', url: 'https://example.com/wiring.png' },
+    { id: 'local', title: 'Local diagram', url: '/media/diagrams/pl-ph-connection.jpg' },
+  ];
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${server.address().port}`;
 });
@@ -79,6 +82,14 @@ test('Retell agent can look through the customer camera and show media', async (
   const shown = event(customer, 'show-media');
   await tool('show', callId, { media_id: 'wiring' });
   assert.deepEqual(await shown, { kind: 'image', url: 'https://example.com/wiring.png', embedUrl: null, title: 'Wiring diagram', caption: '' });
+
+  const localShown = event(customer, 'show-media');
+  await tool('show', callId, { media_id: 'local' });
+  assert.equal((await localShown).url, '/media/diagrams/pl-ph-connection.jpg');
+  assert.equal((await fetch(`${base}/media/diagrams/pl-ph-connection.jpg`)).status, 200);
+
+  const relative = await (await tool('show', callId, { url: '/media/diagrams/pl-ph-connection.jpg' })).json();
+  assert.match(relative.result, /not valid/);
 
   const blocked = await (await tool('show', callId, { url: 'https://evil.example/x' })).json();
   assert.match(blocked.result, /approved list/);

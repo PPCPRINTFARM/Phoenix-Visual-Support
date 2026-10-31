@@ -84,6 +84,19 @@ than letting it make up URLs:
 ]
 ```
 
+Files in `public/media/` are served by this app, so a catalog `url` can be a path such as
+`/media/diagrams/pl-ph-connection.jpg`. The catalog ships with everything from the
+*Master Troubleshooting & Wiring Manual* (edition 2026.09):
+
+- all 21 wiring diagrams (`public/media/diagrams/`), captioned with the manual's own description and page number
+- the 29 official YouTube videos from the manual's video library
+- the full manual PDF (`/media/phoenix-master-manual.pdf`) and the YouTube channel link
+- the start/stop panel photo and start/stop wiring animation
+
+**Give the agent the manual's troubleshooting knowledge too:** in Retell, create a Knowledge Base,
+upload the manual PDF, and attach it to the agent. The media catalog lets it *show* things; the
+knowledge base lets it *answer* from the troubleshooting reference.
+
 ### Security
 
 - Tool requests are accepted only with a valid Retell signature or the shared secret header.
