@@ -8,3 +8,15 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: RETELL_API_KEY
+        sync: false
+      - key: RETELL_AGENT_ID
+        sync: false
+      - key: RETELL_TOOL_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: MEDIA_ALLOWED_HOSTS
+        value: phoenixphaseconverters.com,youtube.com
